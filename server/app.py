@@ -22,12 +22,7 @@ def index():
 def get_earthquake(id):
     earthquake = Earthquake.query.get(id)
     if earthquake:
-        body = {
-            'id': earthquake.id,
-            'location': earthquake.location,
-            'magnitude': earthquake.magnitude,
-            'year': earthquake.year
-        }
+        body = earthquake.to_dict()
         status = 200
     else:
         body = {'message': f'Earthquake {id} not found.'}
@@ -39,15 +34,7 @@ def get_earthquake(id):
 @app.route('/earthquakes/magnitude/<float:magnitude>', methods=['GET'])
 def get_earthquakes_by_magnitude(magnitude):
     earthquakes = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
-    quakes = [
-        {
-            'id': quake.id,
-            'location': quake.location,
-            'magnitude': quake.magnitude,
-            'year': quake.year
-        }
-        for quake in earthquakes
-    ]
+    quakes = [quake.to_dict() for quake in earthquakes]
     body = {
         'count': len(quakes),
         'quakes': quakes
